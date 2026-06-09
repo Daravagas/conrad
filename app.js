@@ -369,8 +369,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         .from('contact_requests')
                         .insert([data]);
 
-                    // Sende an n8n Webhook
-                    const webhookUrl = 'https://greekdealki.app.n8n.cloud/webhook-test/KI-Takis';
+                    // Sende an n8n Webhook (Produktiv-URL)
+                    const webhookUrl = 'https://greekdealki.app.n8n.cloud/webhook/KI-Takis';
                     const n8nPromise = fetch(webhookUrl, {
                         method: 'POST',
                         headers: {
