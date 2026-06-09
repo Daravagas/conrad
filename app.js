@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
        2. Scroll Reveal Animations (Intersection Observer)
        ========================================================================== */
     const revealElements = document.querySelectorAll('.scroll-reveal');
-    
+
     const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -89,14 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left; // x coordinate inside element
             const y = e.clientY - rect.top;  // y coordinate inside element
-            
+
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            
+
             // Calculate tilt angle based on distance from center (max 10 degrees)
-            const rotateX = ((centerY - y) / centerY) * 8; 
+            const rotateX = ((centerY - y) / centerY) * 8;
             const rotateY = ((x - centerX) / centerX) * 8;
-            
+
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
         });
 
@@ -115,10 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
        ========================================================================== */
     const canvas = document.getElementById('magic-canvas');
     const ctx = canvas.getContext('2d');
-    
+
     let particlesArray = [];
     const maxParticles = 65;
-    
+
     // Mouse coords
     let mouse = {
         x: null,
@@ -188,16 +188,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
-                
+
                 if (distance < mouse.radius) {
                     let force = (mouse.radius - distance) / mouse.radius; // Stronger force closer to cursor
                     let forceDirectionX = dx / distance;
                     let forceDirectionY = dy / distance;
-                    
+
                     // Repel particles away from cursor
                     this.x -= forceDirectionX * force * 4.5;
                     this.y -= forceDirectionY * force * 4.5;
-                    
+
                     // Light up particle under cursor influence
                     if (this.color.includes('155') || this.color.includes('9b')) {
                         this.size = this.baseSize * 1.5;
@@ -221,11 +221,11 @@ document.addEventListener('DOMContentLoaded', () => {
             let size = (Math.random() * 2.5) + 1.2;
             let x = Math.random() * (window.innerWidth - size * 2) + size;
             let y = Math.random() * (window.innerHeight - size * 2) + size;
-            
+
             // Very slow, drifting speeds
             let directionX = (Math.random() * 0.4) - 0.2;
             let directionY = (Math.random() * 0.4) - 0.2;
-            
+
             // Mostly subtle off-blacks, with elegant dark bordeaux accents
             let colorVal = Math.random();
             let color;
@@ -244,11 +244,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Animation Loop
     function animateParticles() {
         ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        
+
         for (let i = 0; i < particlesArray.length; i++) {
             particlesArray[i].update();
         }
-        
+
         requestAnimationFrame(animateParticles);
     }
 
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const stepChoose = document.getElementById('step-choose');
     const stepProcess = document.getElementById('step-process');
     const stepReveal = document.getElementById('step-reveal');
-    
+
     const btnNextStep = document.getElementById('btn-next-step');
     const btnRestartTrick = document.getElementById('btn-restart-trick');
     const progressBarFill = document.getElementById('trick-progress');
@@ -295,14 +295,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function fadeTransition(fromStep, toStep, callback) {
         fromStep.style.opacity = '0';
         fromStep.style.transform = 'translateY(-15px)';
-        
+
         setTimeout(() => {
             fromStep.classList.remove('active');
             toStep.classList.add('active');
-            
+
             // Force redraw/browser layouts
             toStep.offsetHeight;
-            
+
             toStep.style.opacity = '1';
             toStep.style.transform = 'translateY(0)';
             if (callback) callback();
@@ -313,21 +313,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function runScannerProgress() {
         let progress = 0;
         progressBarFill.style.width = '0%';
-        
+
         const interval = setInterval(() => {
             // Speed up slightly as it goes, feeling realistic
             progress += Math.random() * 3 + 1;
-            
+
             if (progress >= 100) {
                 progress = 100;
                 clearInterval(interval);
-                
+
                 // Done reading mind, move to reveal step
                 setTimeout(() => {
                     fadeTransition(stepProcess, stepReveal);
                 }, 400);
             }
-            
+
             progressBarFill.style.width = `${progress}%`;
         }, 70);
     }
@@ -337,18 +337,18 @@ document.addEventListener('DOMContentLoaded', () => {
        ========================================================================== */
     const supabaseUrl = 'https://rcmpuqfqlhaioikkrmzm.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjbXB1cWZxbGhhaW9pa2tybXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDUxMDcsImV4cCI6MjA5NjU4MTEwN30.oNz3McJJKUH4KKyZgGHWNAup_Ngn64a0NtVz4oGbiAU';
-    
+
     // Initialize Supabase only if the script loaded successfully
     if (window.supabase) {
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        
+
         const bookingForm = document.getElementById('booking-form');
         const submitBtn = document.getElementById('form-submit-btn');
 
         if (bookingForm) {
             bookingForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
+
                 // Visual feedback during submission
                 const originalBtnText = submitBtn.textContent;
                 submitBtn.textContent = 'Wird gesendet...';
@@ -370,12 +370,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         .insert([data]);
 
                     // Sende an n8n Webhook (OHNE CORS - Bypass)
-                    const webhookUrl = 'https://greekdealki.app.n8n.cloud/webhook/KI-Takis';
-                    
+                    const webhookUrl = 'https://greekdealki.app.n8n.cloud/webhook-test/KI-Takis';
+
                     // Um CORS zu umgehen, senden wir die Daten als normales Web-Formular (urlencoded)
                     // anstelle von JSON und nutzen den "no-cors" Modus.
                     const urlEncodedData = new URLSearchParams(formData).toString();
-                    
+
                     const n8nPromise = fetch(webhookUrl, {
                         method: 'POST',
                         mode: 'no-cors', // Zwingt den Browser, den CORS-Check zu überspringen
