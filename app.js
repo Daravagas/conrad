@@ -377,6 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(data)
+                    }).catch(e => {
+                        console.warn('n8n Netzwerk/CORS Fehler:', e);
+                        return { ok: false, error: e };
                     });
 
                     // Warte auf beide Anfragen parallel
@@ -384,10 +387,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (error) {
                         console.error('Supabase Error:', error);
-                        throw error;
+                        throw error; // Nur Supabase-Fehler lösen die rote Warnung aus
                     }
 
-                    if (!n8nResponse.ok) {
+                    if (!n8nResponse.ok && !n8nResponse.error) {
                         console.warn('n8n Webhook Error:', await n8nResponse.text());
                     }
 
