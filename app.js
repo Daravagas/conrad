@@ -364,12 +364,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 try {
-                    // Insert into Supabase table "contact_requests"
-                    const { error } = await supabase
+                    // Sende an Supabase
+                    const supabasePromise = supabase
                         .from('contact_requests')
                         .insert([data]);
 
-                    if (error) throw error;
+                    // Sende an n8n Webhook
+                    const webhookUrl = 'https://greekdealki.app.n8n.cloud/webhook-test/KI-Takis';
+                    const n8nPromise = fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    // Warte auf beide Anfragen parallel
+                    const [{ error }, n8nResponse] = await Promise.all([supabasePromise, n8nPromise]);
+
+                    if (error) {
+                        console.error('Supabase Error:', error);
+                        throw error;
+                    }
+
+                    if (!n8nResponse.ok) {
+                        console.warn('n8n Webhook Error:', await n8nResponse.text());
+                    }
 
                     // Success
                     alert('Vielen Dank! Ihre Anfrage wurde erfolgreich gesendet. Takis wird sich in Kürze mit Ihnen in Verbindung setzen.');
@@ -377,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 } catch (error) {
                     console.error('Error submitting form:', error);
-                    alert('Entschuldigung, es gab ein Problem beim Senden. Bitte versuchen Sie es später noch einmal.');
+                    alert('Entschuldigung, es gab ein Problem beim Senden. Bitte überprüfen Sie Ihre Internetverbindung oder versuchen Sie es später noch einmal.');
                 } finally {
                     // Restore button state
                     submitBtn.textContent = originalBtnText;
