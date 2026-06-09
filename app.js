@@ -331,4 +331,61 @@ document.addEventListener('DOMContentLoaded', () => {
             progressBarFill.style.width = `${progress}%`;
         }, 70);
     }
+
+    /* ==========================================================================
+       7. Supabase Contact Form Integration
+       ========================================================================== */
+    const supabaseUrl = 'https://rcmpuqfqlhaioikkrmzm.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjbXB1cWZxbGhhaW9pa2tybXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDUxMDcsImV4cCI6MjA5NjU4MTEwN30.oNz3McJJKUH4KKyZgGHWNAup_Ngn64a0NtVz4oGbiAU';
+    
+    // Initialize Supabase only if the script loaded successfully
+    if (window.supabase) {
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        const bookingForm = document.getElementById('booking-form');
+        const submitBtn = document.getElementById('form-submit-btn');
+
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Visual feedback during submission
+                const originalBtnText = submitBtn.textContent;
+                submitBtn.textContent = 'Wird gesendet...';
+                submitBtn.disabled = true;
+
+                // Gather data from form
+                const formData = new FormData(bookingForm);
+                const data = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    event_type: formData.get('event-type'),
+                    message: formData.get('message')
+                };
+
+                try {
+                    // Insert into Supabase table "contact_requests"
+                    const { error } = await supabase
+                        .from('contact_requests')
+                        .insert([data]);
+
+                    if (error) throw error;
+
+                    // Success
+                    alert('Vielen Dank! Ihre Anfrage wurde erfolgreich gesendet. Takis wird sich in Kürze mit Ihnen in Verbindung setzen.');
+                    bookingForm.reset();
+
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                    alert('Entschuldigung, es gab ein Problem beim Senden. Bitte versuchen Sie es später noch einmal.');
+                } finally {
+                    // Restore button state
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+    } else {
+        console.warn('Supabase client could not be loaded.');
+    }
 });
