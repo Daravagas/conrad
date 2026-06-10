@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         .insert([data]);
 
                     // Sende an n8n Webhook (OHNE CORS - Bypass)
-                    const webhookUrl = 'https://greekdealki.app.n8n.cloud/webhook-test/KI-Takis';
+                    const webhookUrl = 'https://greekdealki.app.n8n.cloud/webhook/KI-Takis';
 
                     // Um CORS zu umgehen, senden wir die Daten als normales Web-Formular (urlencoded)
                     // anstelle von JSON und nutzen den "no-cors" Modus.
